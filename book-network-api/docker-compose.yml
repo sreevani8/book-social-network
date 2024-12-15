@@ -1,0 +1,59 @@
+services:
+
+  postgres:
+  
+    container_name: postgres-sql
+    image: postgres
+    
+    environment:
+      POSTGRES_USER: username
+      POSTGRES_PASSWORD: password
+      PGDATA: C:\Users\ravic\Mydocker\volumes\postgres\data
+      POSTGRES_DB: postgres-db
+      
+    volumes:
+      - postgres:/var/lib/postgres/data
+      
+    ports:
+      - 5432:5432
+      
+    networks:
+      - springboot-network
+      
+    restart: unless-stopped
+    
+  mail-dev: 
+  
+    container_name: maildev-container
+    image: maildev/maildev
+    
+    ports:
+      - 1080:1080
+      - 1025:1025
+      
+  keycloak:
+    container_name: keycloak-container
+    image: quay.io/keycloak/keycloak:24.0.2
+    
+    ports:
+      - 9090:8080
+      
+    environment:
+      KEYCLOAK_ADMIN: admin
+      KEYCLOAK_ADMIN_PASSWORD: admin
+      
+    networks:
+      - springboot-network
+      
+    command:
+      - "start-dev"
+networks:
+  springboot-network:
+    driver: bridge
+
+volumes:
+  postgres:
+    driver: local
+  keycloak:
+    driver: local
+  
